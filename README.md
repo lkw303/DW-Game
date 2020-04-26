@@ -179,4 +179,8 @@ There are 6 Main classes used in this code. 5 of which are subclasses of the Kiv
 There are certainly several improvements that can be done to improve this code some of which are listed below.
 
 * Chasing Algorithm
-    * The chasing algoritm can certainly be be better such that the chase is not so monotonous by introducing sudden change in directions."# DW-Game" 
+    * The chasing algoritm can certainly be be better such that the chase is not so monotonous by introducing sudden change in directions. 
+* More Features
+    * More features as "power ups" that can be collected to speed up or slow down the player upon collecting it can be introduced to make the game more interesting.
+* Dual Screen for Double Player Mode
+    * A speaparate screen can also be include so that the second player who is the chaser can have a better orientation of his or her movement.  The current game is fixed to orientate towards the Runner and not the chaser

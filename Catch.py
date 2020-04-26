@@ -94,17 +94,21 @@ class End(Screen):
         self.add_widget(self.button_play_again)
         self.add_widget(self.label)
     
+    
  
     def play_again( self, instance):
         #app.play1.clear_widgets()
         #app.play2.clear_widgets()
-        app.sm.add_widget(app.open)
+        app.remove()
+        app.build_again()
+        #app.sm.add_widget(app.open)
         app.sm.current = "openscreen"
         
+        
 
         
 
-class GameWidget(Widget):
+class Earth(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.ellipse_width = 200
@@ -140,7 +144,7 @@ class GameWidget(Widget):
                 Rotate(origin = self.origin, angle = self.angle)
                 self.earth = Ellipse(source = "images/earth.png",pos = self.ellipse_pos, size = self.ellipse_size)
 
-class GameWidget2(GameWidget):
+class Earth2(Earth):
     pass
 
 class Time(Widget):
@@ -423,8 +427,8 @@ class StartApp(App):
         self._keyboard.bind(on_key_up = self.on_key_up)
         
         #widgets
-        self.g = GameWidget()
-        self.g2 = GameWidget2()
+        self.g = Earth()
+        self.g2 = Earth2()
         self.c1 = Chaser1()
         self.c2 = Chaser2()
         self.pow = Power()
@@ -503,8 +507,7 @@ class StartApp(App):
             Clock.unschedule(app.update2)
             Clock.unschedule(app.update)
             self.sm.current = "end"
-            self.remove()
-            self.build_again()
+            
             
     def remove(self):
         self.sm.remove_widget(self.open)
