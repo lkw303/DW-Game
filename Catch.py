@@ -18,14 +18,32 @@ class OpenScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = "openscreen"
-        self.b1_pos = (Window.width/2, Window.height/2 + 30)
-        self.b2_pos = (Window.width/2, Window.height/2 - 30)
-        self.button_single = Button(text = "Single Player", font_size = 20, size_hint = (0.2,0.1), pos = self.b1_pos)
+        self.b1_pos = (Window.width/2, Window.height/2 )
+        self.b2_pos = (Window.width/2, Window.height/2 )
+        self.button_single = Button(text = "Single Player", font_size = 20, size_hint = (0.2,0.1))
+        self.button_single.pos = (Window.width/2 - (self.button_single.size[0]/1.3), Window.height/2 -60)
         self.button_single.bind(on_release = self.change_screen_single)
         self.add_widget(self.button_single)
-        self.button_double = Button(text = "Double Player", font_size = 20, size_hint = (0.2,0.1), pos = self.b2_pos )
+        self.button_double = Button(text = "Double Player", font_size = 20, size_hint = (0.2,0.1) )
+        self.button_double.pos = (Window.width/2 - (self.button_double.size[0]/1.3), Window.height/2 -60 - self.button_single.size[1])
         self.button_double.bind(on_release = self.change_screen_double)
         self.add_widget(self.button_double)
+
+        self.ellipse_width = 200
+        self.ellipse_height = 200
+        self.ellipse_pos_x = (Window.width- self.ellipse_width)/2
+        self.ellipse_pos_y = (Window.height - self.ellipse_height)/2 + 150
+        self.ellipse_pos =  (self.ellipse_pos_x, self.ellipse_pos_y)
+        self.ellipse_size = (self.ellipse_width, self.ellipse_height)
+        self.origin_x= self.ellipse_pos_x +self.ellipse_width/2
+        self.origin_y = self.ellipse_pos_y + self.ellipse_height/2
+        self.origin = (self.origin_x, self.origin_y)
+        self.angle = 0
+        
+        with self.canvas:
+            self.earth = Ellipse(source = "images/earth.png",pos = self.ellipse_pos, size = self.ellipse_size)
+
+
     
 
 
@@ -54,8 +72,6 @@ class PlayDouble(Screen):
         self.name = "playdouble"
     
 
-
-        
 class End(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -144,7 +160,6 @@ class Time2(Time):
     pass
 
     
-
 class Obstacle(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

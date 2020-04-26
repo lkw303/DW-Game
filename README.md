@@ -11,6 +11,9 @@
 
 ### Objective:
 The objective of the game last as long as possible without being catched by the catcher or colliding with the obstacles.
+![Screen shot of game](images/screenshot.png)
+
+
 
 ### Instrucions:
 
