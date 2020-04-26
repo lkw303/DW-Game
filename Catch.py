@@ -42,10 +42,9 @@ class OpenScreen(Screen):
         
         with self.canvas:
             self.earth = Ellipse(source = "images/earth.png",pos = self.ellipse_pos, size = self.ellipse_size)
-
-
     
 
+        
 
     def change_screen_single(self,instance):
         print("Let's Play Single!")
@@ -64,13 +63,23 @@ class PlaySingle(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = "playsingle"
-    
-
+    '''
+    def on_enter(self):
+        app.p.add_widget(app.t)
+        app.p2.add_widget(app.t2)
+        for i in app.single_mode:
+            self.add_widget(i)
+    '''
 class PlayDouble(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = "playdouble"
-    
+    '''
+    def on_enter(self):
+        app.p2.add_widget(app.t2)
+        for i in app.double_mode:#iterate list of widgets and add them to player widget
+            self.add_widget(i)
+    '''
 
 class End(Screen):
     def __init__(self, **kwargs):
@@ -84,14 +93,16 @@ class End(Screen):
         self.button_play_again.bind(on_release = self.play_again)
         self.add_widget(self.button_play_again)
         self.add_widget(self.label)
-
-    def play_again( self, instance):
-        app.sm.current = "playsingle"
-        Clock.schedule_interval(app.update, 0).cancel()
-        Clock.schedule_interval(app.update2, 0).cancel()
-        app.sm.clear_widgets()
     
+ 
+    def play_again( self, instance):
+        #app.play1.clear_widgets()
+        #app.play2.clear_widgets()
+        app.sm.add_widget(app.open)
+        app.sm.current = "openscreen"
+        
 
+        
 
 class GameWidget(Widget):
     def __init__(self, **kwargs):
@@ -341,10 +352,10 @@ class Chaser2(Widget):
         step_size = dt*100
     
         if "j" in key:
-            self.angle += step_size*2
+            self.angle += step_size*1.1
         
         if "l" in key:
-            self.angle -= step_size*2
+            self.angle -= step_size*1.1
 
         if "d" in key:    
             self.angle -= step_size
@@ -446,9 +457,7 @@ class StartApp(App):
     
     def on_key_down(self, keyboard, keycode, text, modifiers):
         self.keysPressed.add(text)
-        #current_angle = self.angle
-        #current_pos = self.rect_pos
-
+    
  
     def on_key_up(self, keyboard, keycode):
         text = keycode[1]
@@ -461,19 +470,10 @@ class StartApp(App):
         for i in self.single_mode:
             i.move(dt,key)
         
-        #self.c1.move(dt, key)
-        #self.g.move(dt,key)
-        #self.pow.move(dt,key)
-        #self.p.move(dt,key)
-        #self.o.move(dt,key)
-        #self.o2.move(dt,key)
-        #self.o3.move(dt,key)
+  
         for i in self.single_mode[1:6]:
             self.collide(self.p, i)
-        
-        #self.collide(self.p, self.pow)
-        #self.collide(self.pow, self.c1)
-        #self.collide(self.p, self.c1)
+    
         self.t.run_time(dt)
         self.hit_obstacle()
         self.caught()
@@ -500,12 +500,51 @@ class StartApp(App):
     def end_game(self):
         if self.caught() or self.hit_obstacle():
             print("end")
+            Clock.unschedule(app.update2)
+            Clock.unschedule(app.update)
             self.sm.current = "end"
-            self.open.clear_widgets()
-        
+            self.remove()
+            self.build_again()
+            
+    def remove(self):
+        self.sm.remove_widget(self.open)
     
+        self.p.remove_widget(self.t)
+        for i in self.single_mode[1:]:
+            self.p.remove_widget(i)
+        
+        self.p2.remove_widget(self.t2)
+        for i in self.double_mode[1:]:#iterate list of widgets and add them to player widget
+            self.p2.remove_widget(i)
 
-    def collide(self, c1, c2):
+        self.play1.remove_widget(self.p)
+        self.play2.remove_widget(self.p2)
+        self.sm.remove_widget(self.play1)
+        self.sm.remove_widget(self.play2)
+        self.sm.remove_widget(self.end)
+        
+
+
+    def build_again(self):
+        self.sm.add_widget(self.open)
+    
+        self.p.add_widget(self.t)
+        for i in self.single_mode[1:]:
+            self.p.add_widget(i)
+        
+        self.p2.add_widget(self.t2)
+        for i in self.double_mode[1:]:#iterate list of widgets and add them to player widget
+            self.p2.add_widget(i)
+
+        self.play1.add_widget(self.p)
+        self.play2.add_widget(self.p2)
+        self.sm.add_widget(self.play1)
+        self.sm.add_widget(self.play2)
+        self.sm.add_widget(self.end)
+            
+            
+
+    def collide(self, c1, c2): #check collison between arguments c1 and c2 which are widgets
         dx = c1.center[0] - c2.center[0]
         dy = c1.center[1] - c2.center[1]
         d = (dx**2 + dy**2)**0.5
@@ -519,7 +558,7 @@ class StartApp(App):
             print("caught!")
             return True
     
-    def hit_obstacle(self): #check if hit obstacle
+    def hit_obstacle(self): #check if player hit obstacle
         for i in self.single_mode[2:5]:
             if self.collide(self.p, i):
                 print("hit!")
@@ -532,24 +571,16 @@ class StartApp(App):
     def build(self):
         
         self.sm.add_widget(self.open)
+    
         self.p.add_widget(self.t)
-        self.p2.add_widget(self.t2)
         for i in self.single_mode[1:]:
             self.p.add_widget(i)
-
-        for i in self.double_mode[1:]:
+        
+        self.p2.add_widget(self.t2)
+        for i in self.double_mode[1:]:#iterate list of widgets and add them to player widget
             self.p2.add_widget(i)
 
-        '''
-        self.p.add_widget(self.t)
-        self.p.add_widget(self.c)
-        self.p.add_widget(self.pow)
-        self.p.add_widget(self.o)
-        self.p.add_widget(self.o2)
-        self.p.add_widget(self.o3)
-        self.p.add_widget(self.g)
-        '''
-        #self.play.add_widget(self.p)
+    
         self.play1.add_widget(self.p)
         self.play2.add_widget(self.p2)
         self.sm.add_widget(self.play1)
@@ -562,3 +593,4 @@ if __name__ == "__main__":
     app = StartApp()
     app.run()
 
+   
