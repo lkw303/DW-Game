@@ -28,7 +28,7 @@ Once you lose, the end screen will appear giving you the choice to play again or
 The game uses kivy and which is a GUI for python. The game made used of Kivy Widgets, Clock, Buttons, Labels as well as the Kivy Screen Manager.
  
 ### Classes
-There are 6 Main classes used in this code. 5 of which are subclasses of the Kivy Widgets and 1 of which is a subclass of the Kivy Screens.
+There are 9 Main classes used in this code. 5 of which are subclasses of the Kivy Widgets, 3 of which is a subclass of the Kivy Screens and the last one is a subclass of the Kivy App class.
     
 1. Start(App)
     * This is the main class. It inherits from The App class in Kivy.
