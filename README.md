@@ -3,6 +3,8 @@
 ## Introduction:
 ### The purpose of this game is similar to catching and trying to avoid getting caught by the chaser as well as avoiding obstacles by moving left, right and/or jumping. There is also a 2 Player mode where another person can control the catcher to try and catch you.
 
+### Link to Video: https://www.youtube.com/watch?v=bpiRmH7nGoY
+
 ## Game Structure & Instructions
 
 1. Entrance Screen
