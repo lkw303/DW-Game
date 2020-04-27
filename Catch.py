@@ -85,10 +85,9 @@ class End(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.label_size = 0
-        self.label_pos = (Window.width/2, Window.height/2 + 30)
-        self.label = Label(text = "You Lost")
+        self.label = Label(text = "You Lost", font_size = 40 )
         self.name ="end"
-        self.b_pos = (Window.width/2, Window.height/2 + 30)
+        self.b_pos = (Window.width/2 -30, Window.height/2 + 80)
         self.button_play_again = Button(text = "Play Again", font_size = 20, size_hint = (None,None), pos = self.b_pos)
         self.button_play_again.bind(on_release = self.play_again)
         self.add_widget(self.button_play_again)
@@ -99,8 +98,6 @@ class End(Screen):
     def play_again( self, instance):
         #app.play1.clear_widgets()
         #app.play2.clear_widgets()
-        app.remove()
-        app.build_again()
         #app.sm.add_widget(app.open)
         app.sm.current = "openscreen"
         
@@ -195,14 +192,14 @@ class Obstacle(Widget):
 
         self.center = (self.obj.pos[0] + self.obj_size[0]/2, self.obj.pos[1] + self.obj_size[1]/2)
 
-    def move(self, dt, key):
-        step_size = dt *100
+    def move(self, dt, key): #method to move the object when the keys are pressed
+        step_size = dt *100 #step_size = 100 frames
         
-        if "d" in key: #self.keysPressed:
+        if "d" in key: 
             
             self.angle -= step_size
 
-        if "a" in key: #self.keysPressed:
+        if "a" in key: 
             self.angle += step_size
             
         self.obj_pos_x = self.origin[0] + 100*np.sin(((90+self.angle)/180)*np.pi) - (self.obj_size_x/2)
@@ -308,7 +305,7 @@ class Chaser1(Widget): #For Single Player Mode
             
         if "a" in key:    
             self.angle += step_size
-
+        #To automate the movement of the chaser.
         if self.angle >= 360:
             angle = self.angle%360
         elif -360 <= self.angle < 0:
@@ -396,12 +393,12 @@ class Power(Widget):
 
 
 
+
     def move(self,dt,key):
         
 
         step_size = 100*dt
 
-        
         if "d" in key:    
             self.angle -= step_size
 
@@ -431,8 +428,6 @@ class StartApp(App):
         self.g2 = Earth2()
         self.c1 = Chaser1()
         self.c2 = Chaser2()
-        self.pow = Power()
-        self.pow2 = Power2()
         self.p = Player()
         self.p2 = Player2()
         self.o = Obstacle()
@@ -451,8 +446,8 @@ class StartApp(App):
         self.sm = ScreenManager()
         self.end = End()
 
-        self.single_mode = [self.p, self.c1, self.o, self.o2, self.o3, self.pow, self.g] #list of widgets to update for single player
-        self.double_mode = [self.p2, self.c2, self.o4, self.o5, self.o6, self.pow2, self.g2] #list of widgets to update for single player
+        self.single_mode = [self.p, self.c1, self.o, self.o2, self.o3, self.g] #list of widgets to update for single player
+        self.double_mode = [self.p2, self.c2, self.o4, self.o5, self.o6,self.g2] #list of widgets to update for single player
 
     def on_keyboard_closed(self):
         self.keyboard.unbind(on_key_down = self.on_key_down)
@@ -475,12 +470,12 @@ class StartApp(App):
             i.move(dt,key)
         
   
-        for i in self.single_mode[1:6]:
+        for i in self.single_mode[1:5]:
             self.collide(self.p, i)
     
         self.t.run_time(dt)
-        self.hit_obstacle()
-        self.caught()
+        #self.hit_obstacle()
+        #self.caught()
         self.end_game()
 
     def update2(self, dt):
@@ -490,15 +485,15 @@ class StartApp(App):
         for i in self.double_mode:
             i.move(dt,key)
         
-        for i in self.double_mode[1:6]:
+        for i in self.double_mode[1:5]:
             self.collide(self.p2, i)
 
         #self.collide(self.p2, self.pow2)
         #self.collide(self.pow2, self.c2)
         #self.collide(self.p2, self.c2)
         self.t2.run_time(dt)
-        self.hit_obstacle()
-        self.caught()
+        #self.hit_obstacle()
+        #self.caught()
         self.end_game()
         
     def end_game(self):
@@ -508,42 +503,86 @@ class StartApp(App):
             Clock.unschedule(app.update)
             self.sm.current = "end"
             
+            self.remove()
+            self.build_again()
+            self.restart_pos()
             
+            
+    def restart_pos(self):
+        
+        self.c1.obj.pos = self.c1.obj_pos 
+        self.c2.obj.pos = self.c2.obj_pos 
+        self.p.obj.pos = self.p.obj_pos 
+        self.p2.obj.pos = self.p2.obj_pos
+        self.o.obj.pos = self.o.obj_pos 
+        self.o2.obj.pos = self.o2.obj_pos 
+        self.o3.obj.pos = self.o3.obj_pos  
+        self.o4.obj.pos = self.o4.obj_pos  
+        self.o5.obj.pos = self.o5.obj_pos 
+        self.o6.obj.pos = self.o6.obj_pos  
+
+        self.g.angle = 0
+        self.g2.angle = 0
+        self.c1.angle = 90
+        self.c2.angle = 90
+        self.p
+        self.p2
+        self.o.angle = 0
+        self.o2.angle =135
+        self.o3.angle = 225
+        self.o4 = 0
+        self.o5 = 135
+        self.o6 = 225
+        #self.t 
+        #self.t2
+
+        '''
+        self.c1.center  = (self.c1.obj_pos_x + self.c1.obj_size[0]/2, self.c1.obj_pos_y + self.c1.obj_size[1]/2)
+        self.c2.center = (self.c2.obj_pos_x + self.c2.obj_size[0]/2, self.c2.obj_pos_y + self.c2.obj_size[1]/2)
+        self.pow.center  (self.pow.obj_pos_x + self.pow.obj_size[0]/2, self.pow.obj_pos_y+ self.pow.obj_size[1]/2)
+        self.pow2.center = (self.pow2.obj_pos_x + self.pow2.obj_size[0]/2, self.pow2.obj_pos_y + self.pow2.obj_size[1]/2)
+        self.p.center = (self.p.obj_pos_x + self.p.obj_size[0]/2, self.p.obj_pos_y + self.p.obj_size[1]/2)
+        self.p2.center = (self.p2.obj_pos_x + self.p2.obj_size[0]/2, self.p2.obj_pos_y + self.p2.obj_size[1]/2)
+        self.o.center = (self.o.obj_pos_x + self.o.obj_size[0]/2, self.o.obj_pos_y + self.o.obj_size[1]/2)
+        self.o2.center  = (self.o2.obj_pos_x + self.o2.obj_size[0]/2, self.o2.obj_pos_y + self.o2.obj_size[1]/2)
+        self.o3.center = (self.o3.obj_pos_x+ self.o3.obj_size[0]/2, self.o3.obj_pos_y + self.o3.obj_size[1]/2)
+        self.o4.center = (self.o4.obj_pos_x + self.o4.obj_size[0]/2, self.o4.obj_pos_y + self.o4.obj_size[1]/2)
+        self.o5.center =(self.o5.obj_pos_x + self.o5.obj_size[0]/2, self.o5.obj_pos_y + self.o5.obj_size[1]/2)
+        self.o6.center =(self.o6.obj_pos_x + self.o6.obj_size[0]/2, self.o6.obj_pos_y + self.o6.obj_size[1]/2)
+        '''
     def remove(self):
-        self.sm.remove_widget(self.open)
-    
-        self.p.remove_widget(self.t)
-        for i in self.single_mode[1:]:
-            self.p.remove_widget(i)
-        
-        self.p2.remove_widget(self.t2)
-        for i in self.double_mode[1:]:#iterate list of widgets and add them to player widget
-            self.p2.remove_widget(i)
+        del self.g
+        del self.g2
+        del self.c1
+        del self.c2
+        del self.p 
+        del self.p2
+        del self.o
+        del self.o2
+        del self.o3 
+        del self.o4 
+        del self.o5 
+        del self.o6
+        del self.t
+        del self.t2
 
-        self.play1.remove_widget(self.p)
-        self.play2.remove_widget(self.p2)
-        self.sm.remove_widget(self.play1)
-        self.sm.remove_widget(self.play2)
-        self.sm.remove_widget(self.end)
         
-
 
     def build_again(self):
-        self.sm.add_widget(self.open)
-    
-        self.p.add_widget(self.t)
-        for i in self.single_mode[1:]:
-            self.p.add_widget(i)
-        
-        self.p2.add_widget(self.t2)
-        for i in self.double_mode[1:]:#iterate list of widgets and add them to player widget
-            self.p2.add_widget(i)
-
-        self.play1.add_widget(self.p)
-        self.play2.add_widget(self.p2)
-        self.sm.add_widget(self.play1)
-        self.sm.add_widget(self.play2)
-        self.sm.add_widget(self.end)
+        self.g = Earth()
+        self.g2 = Earth2()
+        self.c1 = Chaser1()
+        self.c2 = Chaser2()
+        self.p = Player()
+        self.p2 = Player2()
+        self.o = Obstacle()
+        self.o2 = Obstacle2()
+        self.o3 = Obstacle3()
+        self.o4 = Obstacle4()
+        self.o5 = Obstacle5()
+        self.o6 = Obstacle6()
+        self.t = Time()
+        self.t2 = Time2()
             
             
 
@@ -560,6 +599,7 @@ class StartApp(App):
         if self.collide(self.p, self.c1) or self.collide(self.p2, self.c2):
             print("caught!")
             return True
+            
     
     def hit_obstacle(self): #check if player hit obstacle
         for i in self.single_mode[2:5]:
